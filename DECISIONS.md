@@ -109,6 +109,22 @@ Discount applied before tax. Rounding once at the final step, half-up.
 
 ---
 
+## [D12] No DB transaction on invoice create — neon-http limitation
+
+- **Chose:** Sequential inserts (invoice then items) without a wrapping transaction.
+- **Rejected:** Switching to `drizzle-orm/neon-serverless` (WebSocket) to get real transaction support — adds a WebSocket dependency and more complex connection lifecycle.
+- **Why:** `drizzle-orm/neon-http` uses Neon's stateless HTTP API which does not support `BEGIN`/`COMMIT` transactions. The risk (orphaned invoice with no items on a partial failure) is real but extremely unlikely in normal operation, and acceptable for this challenge scope.
+- **Trade-off:** If the items insert fails after the invoice insert succeeds, we'd have an orphaned invoice row. Mitigated by: (a) Zod validates items before any DB write, (b) items FK cascade-deletes on invoice delete, (c) out of scope to fix in this session.
+
+## [D13] Zod v4 for input validation
+
+- **Chose:** Zod v4 (already installed as a transitive dep — pinned explicitly in package.json).
+- **Rejected:** Downgrading to Zod v3 — unnecessary churn.
+- **Why:** Zod v4 is installed; the APIs used here (`z.object`, `z.string`, `z.number().int()`, `.safeParse`, `.error.issues`) are stable across v3 and v4.
+- **Trade-off:** Zod v4 has breaking changes in error formatting (`flatten`, `format`) — only use `.issues` directly in responses to stay version-agnostic.
+
+---
+
 ## AI corrections
 
 _(Populated as corrections are made during the session.)_
