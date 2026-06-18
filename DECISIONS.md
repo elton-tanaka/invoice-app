@@ -141,6 +141,15 @@ Discount applied before tax. Rounding once at the final step, half-up.
 
 ---
 
+## [D16] Pay endpoint: fetch-then-update, not a conditional UPDATE
+
+- **Chose:** Fetch invoice first (to run `canPay` and get items for total), then do a separate UPDATE.
+- **Rejected:** A single `UPDATE … WHERE status='OPEN' RETURNING` with a 0-rows check — would work but bypasses `canPay` (the typed domain guard) and makes the 409 vs 404 distinction harder to express cleanly.
+- **Why:** Keeps domain logic (`canPay`) in the domain layer, not in SQL. The two-query cost is negligible. The typed `Result` from `canPay` maps cleanly to 409.
+- **Trade-off:** Two round-trips to the DB (read then write). A race condition exists: another request could pay the invoice between the fetch and the update. Acceptable for this scope — a real system would use `SELECT FOR UPDATE` or the conditional UPDATE approach.
+
+---
+
 ## AI corrections
 
 _(Populated as corrections are made during the session.)_
