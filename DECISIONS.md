@@ -150,6 +150,22 @@ Discount applied before tax. Rounding once at the final step, half-up.
 
 ---
 
+## [D17] Server Components read DB directly; Client Components call the HTTP API
+
+- **Chose:** List page and detail page are Server Components that import `db` and query Drizzle directly. The create form and pay button are Client Components that call `/api/invoices` via `fetch`.
+- **Rejected:** Having Server Components call their own API via `fetch('http://localhost:3000/api/...')` — requires knowing the base URL, which varies between local/Vercel; unnecessary HTTP round-trip in the same process.
+- **Why:** Next.js App Router Server Components can safely import server-only modules. Direct DB access is simpler, faster, and avoids the base-URL problem.
+- **Trade-off:** Domain logic and formatting are duplicated between the route handlers and the Server Components. Acceptable at this scale.
+
+## [D18] Percentage inputs in the UI, converted to bps on submit
+
+- **Chose:** Create form accepts discount/tax as a percentage (0–100, two decimal places), converts to basis points (`pct * 100`) on submit.
+- **Rejected:** Accepting basis points directly — not user-friendly; "10%" is clearer than "1000".
+- **Why:** Basis points are an internal representation; the UI should speak the user's language.
+- **Trade-off:** The conversion `Math.round(parseFloat(pct) * 100)` must handle floating-point input safely. `Math.round` covers the edge cases.
+
+---
+
 ## AI corrections
 
 _(Populated as corrections are made during the session.)_

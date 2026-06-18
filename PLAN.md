@@ -8,7 +8,7 @@
 - [x] **Slice 3 — Create invoice:** `POST /api/invoices`, Zod validation, DB insert
 - [x] **Slice 4 — List + Get:** `GET /api/invoices`, `GET /api/invoices/[id]`
 - [x] **Slice 5 — Pay invoice:** `POST /api/invoices/[id]/payments`, domain guard, 409 path
-- [ ] **Slice 6 — Frontend:** list page, create form, detail view, pay button
+- [x] **Slice 6 — Frontend:** list page, create form, detail view, pay button
 - [ ] **Slice 7 — Deploy + verify:** Vercel deploy, smoke test on live URL
 
 ## Calculation rule (locked)
