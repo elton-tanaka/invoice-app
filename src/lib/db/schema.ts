@@ -1,4 +1,5 @@
 import { pgTable, uuid, varchar, integer, timestamp } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 export const invoices = pgTable('invoices', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -19,3 +20,14 @@ export const invoiceItems = pgTable('invoice_items', {
   quantity: integer('quantity').notNull(),
   unitPriceCents: integer('unit_price_cents').notNull(),
 });
+
+export const invoicesRelations = relations(invoices, ({ many }) => ({
+  items: many(invoiceItems),
+}));
+
+export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
+  invoice: one(invoices, {
+    fields: [invoiceItems.invoiceId],
+    references: [invoices.id],
+  }),
+}));

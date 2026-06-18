@@ -125,6 +125,22 @@ Discount applied before tax. Rounding once at the final step, half-up.
 
 ---
 
+## [D14] Drizzle relational query API for nested invoice+items fetches
+
+- **Chose:** Drizzle's relational query API (`db.query.invoices.findMany({ with: { items: true } })`) after adding `relations()` declarations to the schema.
+- **Rejected:** Manual JOIN with `db.select().from().leftJoin()` — requires manual grouping of flat rows into nested objects; more code, more error-prone.
+- **Why:** Relational API returns already-nested objects, matching the response shape directly. The `relations()` declarations add no migration cost.
+- **Trade-off:** Requires importing `relations` from `drizzle-orm` and keeping the declarations in sync with the FK structure. Low maintenance burden.
+
+## [D15] List endpoint computes total_cents per invoice in application layer
+
+- **Chose:** Fetch all invoices with their items via relational query, then call `calculateTotal` in the app layer for each.
+- **Rejected:** Computing totals in a SQL aggregate query — would bypass `calculateTotal` (the canonical formula) and duplicate the two-step rounding logic in SQL.
+- **Why:** Keeps the rounding formula in one place (domain module). Consistency over raw DB performance.
+- **Trade-off:** For large invoice sets this is less efficient than a single SQL aggregate. Acceptable given the deferred pagination decision.
+
+---
+
 ## AI corrections
 
 _(Populated as corrections are made during the session.)_

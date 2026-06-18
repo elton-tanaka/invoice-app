@@ -19,6 +19,32 @@ const CreateInvoiceSchema = z.object({
   tax_bps: z.number().int().min(0).default(0),
 });
 
+export async function GET(): Promise<Response> {
+  try {
+    const rows = await db.query.invoices.findMany({
+      with: { items: true },
+      orderBy: (inv, { desc }) => [desc(inv.createdAt)],
+    });
+
+    return Response.json(
+      rows.map((inv) => ({
+        id: inv.id,
+        customer_name: inv.customerName,
+        status: inv.status,
+        total_cents: calculateTotal(
+          inv.items.map((i) => ({ quantity: i.quantity, unitPriceCents: i.unitPriceCents })),
+          inv.discountBps,
+          inv.taxBps,
+        ),
+        created_at: inv.createdAt,
+      })),
+    );
+  } catch (e) {
+    console.error('[GET /api/invoices]', e);
+    return Response.json({ error: 'INTERNAL_ERROR' }, { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest): Promise<Response> {
   let body: unknown;
   try {
