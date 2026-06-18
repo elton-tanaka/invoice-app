@@ -11,7 +11,7 @@ export default async function HomePage() {
     with: { items: true },
     orderBy: (inv, { desc }) => [desc(inv.createdAt)],
   });
-
+  console.log('Fetched invoices:', rows);
   return (
     <main className="mx-auto max-w-4xl px-4 py-10">
       <div className="flex items-center justify-between mb-8">
