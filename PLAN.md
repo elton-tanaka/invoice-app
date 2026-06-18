@@ -4,7 +4,7 @@
 
 - [x] **Slice 0 — Foundation:** DB schema (Drizzle), migration, Vitest setup, `typecheck` npm script
 - [x] **Slice 1 — Domain logic + tests:** `calculateTotal`, `canPay` pure functions + unit tests (no HTTP, no DB)
-- [ ] **Slice 2 — Health endpoint:** `GET /api/health`
+- [x] **Slice 2 — Health endpoint:** `GET /api/health`
 - [ ] **Slice 3 — Create invoice:** `POST /api/invoices`, Zod validation, DB insert
 - [ ] **Slice 4 — List + Get:** `GET /api/invoices`, `GET /api/invoices/[id]`
 - [ ] **Slice 5 — Pay invoice:** `POST /api/invoices/[id]/payments`, domain guard, 409 path

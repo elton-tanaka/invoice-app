@@ -100,6 +100,15 @@ Discount applied before tax. Rounding once at the final step, half-up.
 
 ---
 
+## [D11] App directory at project root, not src/app
+
+- **Chose:** Keep route files under `app/` (project root), matching the existing scaffold.
+- **Rejected:** Moving to `src/app/` — would require relocating the existing layout/page files and updating tsconfig paths; no benefit at this scale.
+- **Why:** The Create Next App scaffold placed the app router at the root `app/` dir. Domain/DB code lives in `src/lib/` by convention. Both conventions coexist cleanly.
+- **Trade-off:** The project root has two source roots (`app/` and `src/`). Acceptable given the clear separation of concerns.
+
+---
+
 ## AI corrections
 
 _(Populated as corrections are made during the session.)_
