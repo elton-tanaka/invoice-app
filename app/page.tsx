@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { db } from '@/src/lib/db/index';
 import { calculateTotal } from '@/src/lib/domain/invoices';
 
+export const dynamic = 'force-dynamic';
+
 function formatCents(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
 }
